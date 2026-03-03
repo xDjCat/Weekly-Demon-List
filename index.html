@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0e1117">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>The Weekly Demon List</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -18,7 +21,21 @@
 body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(79,142,247,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 
-/* ── EDGE GLOW EFFECTS ── */
+/* ── COMPACT MODE (user preference) ── */
+body.compact-mode .level-thumb{width:60px!important;min-width:60px!important;height:48px!important}
+body.compact-mode .level-name{font-size:.88rem!important}
+body.compact-mode .level-info{padding:5px 8px!important}
+body.compact-mode .level-right{padding:4px 5px 4px 2px!important}
+body.compact-mode .stars{display:none!important}
+body.compact-mode .level-list{gap:5px!important}
+
+/* ── FORCED LAYOUT OVERRIDES ── */
+body.layout-mobile .level-thumb{width:70px!important;min-width:70px!important;height:54px!important}
+body.layout-mobile .diff-rating{display:none!important}
+body.layout-mobile .controls-row{flex-direction:column!important;align-items:flex-start!important}
+body.layout-tablet .level-thumb{width:100px!important;min-width:100px!important;height:64px!important}
+body.layout-desktop .level-thumb{width:136px!important;min-width:136px!important;height:78px!important}
+
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
     linear-gradient(90deg, rgba(220,38,38,.07) 0%, rgba(251,146,60,.05) 2%, transparent 12%),
@@ -676,21 +693,242 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:20px 18px
 .btn-load{background:linear-gradient(135deg,var(--accent),#3a6fd8);border:none;color:#fff;padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.04em}
 .btn-load:hover{opacity:.88}
 
-@media(max-width:640px){
-  .level-thumb{width:80px;min-width:80px;height:56px}
-  .tab{padding:10px 8px 8px;font-size:.8rem}
-  .user-label{display:none}
-  header{height:52px}
-  .lb-strip{top:52px}
-  .tabs-bar{top:84px}
-  .subtabs-bar{top:128px}
+/* ═══════════════════════════════════════
+   RESPONSIVE — TABLET (769–1024px)
+═══════════════════════════════════════ */
+@media(max-width:1024px){
+  .level-thumb{width:110px;min-width:110px;height:68px}
+  .lb-card .lb-score-num{font-size:1.9rem}
+  .players-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — LARGE PHONE / SMALL TABLET (481–768px)
+═══════════════════════════════════════ */
+@media(max-width:768px){
+  /* Header collapses into two rows */
+  header{min-height:52px;padding:0 10px;gap:6px;flex-wrap:wrap}
+  .logo-text{font-size:.88rem}
+  .logo-img{width:30px;height:30px}
+  .search-bar{min-width:120px;max-width:200px}
+  .header-right{gap:4px}
   .weekly-countdown-label{display:none}
-  .level-tri{width:20%}
+  .user-label{display:none}
+  .last-updated{display:none}
+
+  /* Strips */
+  .lb-strip{top:52px;padding:0 10px;gap:8px;height:32px}
+  .stats-bar{top:84px;padding:4px 10px;gap:6px}
+  .tabs-bar{top:116px;padding:0 8px}
+  .subtabs-bar{top:160px;padding:1px 8px}
+
+  /* Tabs smaller */
+  .tab{padding:9px 10px 7px 8px;font-size:.78rem;gap:6px}
+  .subtab{padding:4px 9px 3px 7px;font-size:.7rem}
+
+  /* Level card — stack more compactly */
+  .level-thumb{width:80px;min-width:80px;height:60px}
+  .level-name{font-size:.95rem}
+  .level-right{padding:6px 6px 6px 4px}
+  .level-tri{width:18%}
   .lb-strip-bar{display:none}
+  .diff-rating{display:none}
+
+  /* Player grid */
+  .players-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:5px}
+
+  /* Packs grid */
+  .packs-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+
+  /* Leaderboard */
+  .lb-main{padding:10px 12px 8px}
+  .lb-score-num{font-size:1.6rem}
+  .lb-name{font-size:1rem}
+  .lb-avatar{width:30px;height:30px}
+  .lb-avatar-fallback{width:30px;height:30px;font-size:.9rem}
+  .lb-hardest-inline{display:none}
+
+  /* Controls row */
+  .controls-row{flex-direction:column;align-items:flex-start;gap:6px}
+
+  /* Filter drawer */
   .pf-drawer{flex-wrap:wrap;max-width:none;max-height:0;opacity:0;transition:max-height .3s ease,opacity .25s ease,margin-top .25s}
   .pf-drawer.open{max-width:none;max-height:200px;opacity:1;margin-top:6px}
   .pf-wrap{flex-wrap:wrap}
+
+  /* Search mode btns smaller */
+  .search-mode-btn{padding:3px 7px;font-size:.66rem}
+
+  /* FAB lower on tablet */
+  #fab-add-level{bottom:16px;right:16px}
 }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — PHONE (≤480px)
+   iPhone SE, iPhone 14, Android phones
+═══════════════════════════════════════ */
+@media(max-width:480px){
+  /* Header: logo + search on top row, controls on second */
+  header{min-height:auto;padding:6px 10px;flex-wrap:wrap;gap:5px;row-gap:6px}
+  .logo-wrap{flex:0 0 auto}
+  .logo-text{font-size:.82rem}
+  .logo-img{width:28px;height:28px;border-radius:7px}
+  .search-bar{flex:1;min-width:100px;max-width:none;order:3;width:100%}
+  .search-mode-btns{order:4;gap:3px}
+  .search-mode-btn{padding:3px 8px;font-size:.64rem}
+  .header-right{order:2;flex:0 0 auto;gap:3px;flex-wrap:nowrap}
+  .weekly-countdown{padding:2px 6px}
+  .weekly-countdown-time{font-size:.76rem;min-width:44px}
+  .user-switcher{padding:2px 3px;gap:1px}
+  .user-btn{padding:2px 4px;font-size:.6rem;gap:2px}
+  .user-btn img,.user-btn .user-avatar-fallback{width:14px;height:14px;font-size:.55rem}
+  .settings-btn{padding:4px 7px;font-size:.74rem}
+  .refresh-btn{padding:4px 6px;font-size:.78rem}
+
+  /* Sticky stack — phone has smaller header so recalc tops */
+  .lb-strip{top:96px;padding:0 8px;gap:6px;height:30px;font-size:.6rem}
+  .lb-strip-label{display:none}
+  .lb-strip-fulls-lbl{display:none}
+  .lb-strip-fulls-num{font-size:.9rem}
+  .stats-bar{top:126px;padding:3px 8px;gap:4px;min-height:28px}
+  .stats-bar-lbl{display:none}
+  .tabs-bar{top:154px;padding:0 4px}
+  .subtabs-bar{top:198px;padding:1px 4px}
+
+  /* Tabs — icon only hints */
+  .tab{padding:8px 8px 6px 7px;font-size:.72rem;gap:4px;letter-spacing:.03em}
+  .tab::before{width:2px;height:10px}
+  .subtab{padding:4px 7px 3px 6px;font-size:.65rem;gap:4px}
+
+  /* Level card — phone optimized */
+  .level-card{border-radius:8px}
+  .level-thumb{width:70px;min-width:70px;height:54px}
+  .level-info{padding:6px 8px}
+  .level-name{font-size:.88rem}
+  .level-name-row{gap:4px;margin-bottom:2px}
+  .rank-num{font-size:.7rem;min-width:22px}
+  .diff-badge{font-size:.56rem;padding:1px 5px}
+  .diff-rating{display:none}
+  .level-meta{font-size:.66rem;gap:3px}
+  .level-right{padding:5px 5px 5px 2px;gap:3px}
+  .enj-num{font-size:.76rem}
+  .stars{gap:0}.star{font-size:.5rem}
+  .coins-tag,.no-coins-tag{font-size:.6rem;padding:1px 4px}
+  .level-tri{width:12%}
+  .card-actions-col{padding:4px 5px}
+  .chevron{font-size:.6rem}
+  .admin-meta-btn{width:24px;height:24px;font-size:.7rem}
+
+  /* Expand */
+  .level-expand{max-height:0}
+  .level-entry.open .level-expand{max-height:500px;padding:10px 10px 12px}
+  .players-grid{grid-template-columns:1fr 1fr;gap:5px}
+  .player-card{padding:7px 8px}
+  .player-name{font-size:.82rem}
+  .stat-row{font-size:.64rem}
+
+  /* Controls row */
+  .controls-row{flex-direction:column;align-items:flex-start;gap:5px}
+  .section-title{font-size:.88rem}
+  .toggle-stack{align-items:flex-start}
+  .sort-toggle{flex-wrap:wrap;gap:3px}
+  .sort-btn{font-size:.66rem;padding:3px 8px}
+  .filter-row{gap:3px;flex-wrap:wrap}
+  .df-btn{font-size:.64rem;padding:3px 7px}
+  .rate-filter-row{gap:3px;flex-wrap:wrap}
+  .rate-btn{font-size:.62rem;padding:2px 7px}
+
+  /* Stats bar — just pills, no label */
+  .stats-bar-pill{font-size:.56rem;padding:1px 6px}
+
+  /* LB strip — compact */
+  .lb-strip-player{gap:4px}
+  .lb-strip-name{font-size:.66rem}
+  .lb-strip-count{font-size:.6rem}
+  .lb-strip-avatar,.lb-strip-avatar-fb{width:18px;height:18px;font-size:.6rem}
+  .lb-strip-icon{font-size:.7rem}
+
+  /* Leaderboard cards */
+  .lb-card{border-radius:10px}
+  .lb-main{padding:8px 10px 6px;flex-wrap:wrap}
+  .lb-rank-col{width:36px;min-width:36px}
+  .lb-rank-icon{font-size:1.4rem}
+  .lb-vdivider{margin:0 8px}
+  .lb-name{font-size:.92rem}
+  .lb-avatar{width:26px;height:26px}
+  .lb-avatar-fallback{width:26px;height:26px;font-size:.8rem}
+  .lb-score-num{font-size:1.4rem}
+  .lb-score-lbl{font-size:.54rem}
+  .lb-stats-row{gap:5px}
+  .lb-stat{padding:3px 7px}
+  .lb-stat-num{font-size:.8rem}
+  .lb-stat-lbl{font-size:.52rem}
+  .lb-hardest-inline,.lb-perdiff-section{display:none}
+  .lb-prank-btn,.lb-hardests-btn{font-size:.6rem;padding:2px 7px}
+
+  /* Packs */
+  .packs-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .pack-card{padding:12px 10px}
+  .pack-name{font-size:.9rem}
+  .alphabet-accordion-header{padding:10px 12px}
+
+  /* Modals — full screen on phone */
+  .modal{width:100%;max-width:100%;border-radius:14px 14px 0 0;padding:18px 16px;position:fixed;bottom:0;left:0;right:0;transform:translateY(30px);max-height:90vh;overflow-y:auto}
+  .modal-overlay.open .modal{transform:translateY(0)}
+  .modal-overlay{align-items:flex-end}
+
+  /* Settings sections */
+  .settings-section{padding:10px 12px}
+
+  /* FAB — bigger tap target on phone */
+  #fab-add-level{bottom:20px;right:16px}
+  #fab-add-level button{width:56px;height:56px;font-size:1.5rem}
+
+  /* Divergence */
+  .div-card{flex-wrap:wrap}
+  .div-thumb{width:56px;height:40px}
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — TINY PHONE (≤360px)
+   iPhone SE 1st gen, small Androids
+═══════════════════════════════════════ */
+@media(max-width:360px){
+  .user-btn span:not([class]){display:none} /* hide name, keep avatar */
+  .level-thumb{width:56px;min-width:56px;height:48px}
+  .tab{font-size:.66rem;padding:7px 6px 5px}
+  .players-grid{grid-template-columns:1fr}
+  .packs-grid{grid-template-columns:1fr}
+  .lb-main{flex-wrap:wrap;gap:6px}
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — IPAD / LARGE TABLET (1025–1180px)
+═══════════════════════════════════════ */
+@media(min-width:769px) and (max-width:1180px){
+  .level-thumb{width:100px;min-width:100px;height:64px}
+  .packs-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+  .players-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+}
+
+/* ═══════════════════════════════════════
+   TOUCH — larger tap targets on touch devices
+═══════════════════════════════════════ */
+@media(hover:none) and (pointer:coarse){
+  .tab{min-height:44px}
+  .subtab{min-height:36px}
+  .user-btn{min-height:32px;padding:4px 8px}
+  .rate-btn{min-height:30px;padding:4px 10px}
+  .df-btn{min-height:30px}
+  .sort-btn{min-height:30px}
+  .btn-load,.btn-cancel{min-height:38px;padding:8px 18px}
+  .settings-btn{min-height:36px}
+  .refresh-btn{min-height:36px;width:36px}
+  /* Remove hover effects that don't work on touch */
+  .level-card:hover{border-color:var(--border);box-shadow:none}
+  .level-entry.open .level-card{border-color:var(--accent)}
+}
+
 </style>
 </head>
 <body>
@@ -1373,6 +1611,19 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:20px 18px
           <span>Show coin badges</span>
           <input type="checkbox" id="prefShowCoins" checked onchange="savePref('showCoins',this.checked)" style="accent-color:var(--accent)">
         </label>
+        <label style="display:flex;align-items:center;justify-content:space-between;font-size:.8rem;cursor:pointer">
+          <span>Compact card layout <span style="font-size:.65rem;color:var(--muted)">(smaller thumbnails)</span></span>
+          <input type="checkbox" id="prefCompact" onchange="savePref('compact',this.checked);applyCompact(this.checked)" style="accent-color:var(--accent)">
+        </label>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:.8rem;gap:8px">
+          <span>Layout <span style="font-size:.65rem;color:var(--muted)">(auto-detected)</span></span>
+          <select id="prefLayout" onchange="savePref('layout',this.value);applyLayout(this.value)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:3px 8px;border-radius:6px;font-size:.74rem;outline:none">
+            <option value="auto">🔍 Auto-detect</option>
+            <option value="desktop">🖥️ Desktop</option>
+            <option value="tablet">📱 Tablet</option>
+            <option value="mobile">📱 Mobile</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -1662,9 +1913,11 @@ function setPF(f){pfFilter=f;renderPFWraps();renderAll();}
 //  INIT
 // ═══════════════════════════════════════════
 window.addEventListener('DOMContentLoaded',()=>{
-  // Load accent color
+  // Apply saved preferences (compact mode, layout, accent color) immediately
+  applyAllPrefs();
+  // Load accent color picker value
   const savedAccent=localStorage.getItem('gdl_accent');
-  if(savedAccent){document.documentElement.style.setProperty('--accent',savedAccent);const el=document.getElementById('accentColorPicker');if(el)el.value=savedAccent;}
+  if(savedAccent){const el=document.getElementById('accentColorPicker');if(el)el.value=savedAccent;}
   document.querySelectorAll('.user-btn').forEach(b=>b.classList.toggle('active-user',b.dataset.user===currentUser));
   renderPFWraps();
   const inp=document.getElementById('sheetUrlInput');
@@ -3618,6 +3871,10 @@ function openSettingsModal(){
     const el=document.getElementById('pref'+k.charAt(0).toUpperCase()+k.slice(1));
     if(el)el.checked=userPrefs[k]!==false;
   });
+  const compactEl=document.getElementById('prefCompact');
+  if(compactEl)compactEl.checked=userPrefs.compact===true;
+  const layoutEl=document.getElementById('prefLayout');
+  if(layoutEl)layoutEl.value=userPrefs.layout||'auto';
   document.getElementById('settingsModal').classList.add('open');
 }
 function closeSettingsModal(){document.getElementById('settingsModal').classList.remove('open');}
@@ -3627,6 +3884,20 @@ function saveAndLoad(){const v=document.getElementById('sheetUrlInput').value.tr
 function savePref(key,val){userPrefs[key]=val;savePrefs();}
 function applyAccent(color){document.documentElement.style.setProperty('--accent',color);localStorage.setItem('gdl_accent',color);}
 function applyGlow(val){document.documentElement.style.setProperty('--glow-mult',val);localStorage.setItem('gdl_glow',val);}
+
+function applyCompact(on){
+  document.body.classList.toggle('compact-mode', on);
+}
+function applyLayout(val){
+  document.body.classList.remove('layout-desktop','layout-tablet','layout-mobile');
+  if(val&&val!=='auto') document.body.classList.add('layout-'+val);
+}
+function applyAllPrefs(){
+  applyCompact(userPrefs.compact===true);
+  applyLayout(userPrefs.layout||'auto');
+  const accent=localStorage.getItem('gdl_accent');
+  if(accent) document.documentElement.style.setProperty('--accent',accent);
+}
 function renderSettingsProfile(){
   const body=document.getElementById('settings-profile-body');
   if(!body)return;
