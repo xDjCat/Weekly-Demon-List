@@ -704,6 +704,11 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:20px 18px
 <div class="edge-glow-left" aria-hidden="true"></div>
 <div class="edge-glow-right" aria-hidden="true"></div>
 
+<!-- Floating Add Level button (admin only) -->
+<div id="fab-add-level" style="display:none;position:fixed;bottom:24px;right:24px;z-index:500">
+  <button onclick="openAddLevelModal()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;width:52px;height:52px;border-radius:50%;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(79,142,247,.5),0 0 30px rgba(79,142,247,.25);transition:transform .18s,box-shadow .18s;display:flex;align-items:center;justify-content:center;font-weight:700" onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 6px 28px rgba(79,142,247,.7),0 0 40px rgba(79,142,247,.35)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 20px rgba(79,142,247,.5),0 0 30px rgba(79,142,247,.25)'" title="Add Level">➕</button>
+</div>
+
 <header>
   <a class="logo-wrap" href="#">
     <div class="logo-img" id="logoImgWrap">💀</div>
@@ -734,6 +739,7 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:20px 18px
     </div>
     <div id="admin-add-btn-wrap" style="display:none;gap:4px;align-items:center">
       <button class="admin-add-btn" onclick="openAdminAddModal()" title="Override completion">⚡ Override</button>
+      <button class="admin-add-btn" style="background:rgba(79,142,247,.12);border-color:rgba(79,142,247,.4);color:var(--accent)" onclick="openAddLevelModal()" title="Add level manually">➕ Level</button>
     </div>
     <span class="last-updated" id="lastUpdated"></span>
     <button class="settings-btn" onclick="openSettingsModal()" title="Settings">⚙️ Settings</button>
@@ -823,6 +829,7 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:20px 18px
       <div style="display:flex;align-items:center;gap:8px">
         <span class="section-title">All Levels</span>
         <span class="count-badge" id="main-count">—</span>
+        <button id="main-add-level-btn" class="admin-add-btn" style="display:none;background:linear-gradient(135deg,rgba(79,142,247,.18),rgba(56,224,192,.1));border-color:rgba(79,142,247,.5);color:var(--accent);font-size:.76rem;font-weight:700;padding:5px 12px;border-radius:8px;gap:5px" onclick="openAddLevelModal()">➕ Add Level</button>
       </div>
       <div class="toggle-stack">
         <label class="toggle-row coinless-toggle"><input type="checkbox" id="coinless-main" onchange="renderAll()"><span class="toggle-pill"><span class="tgl-sw"></span><span style="font-size:.8rem">🪙</span>Coinless only</span></label>
@@ -1719,6 +1726,10 @@ function submitPassword(){
     if(adminTabGrp)adminTabGrp.style.display='';
     const shopAdmin=document.getElementById('shop-admin-add');
     if(shopAdmin)shopAdmin.style.display='';
+    const fab=document.getElementById('fab-add-level');
+    if(fab)fab.style.display='';
+    const mainAddBtn=document.getElementById('main-add-level-btn');
+    if(mainAddBtn)mainAddBtn.style.display='';
     showAdminBadge();
   } else {
     document.getElementById('passwordError').textContent='Incorrect password.';
@@ -1758,6 +1769,10 @@ function setUser(name){
     if(adminTabGrp)adminTabGrp.style.display='none';
     const shopAdmin=document.getElementById('shop-admin-add');
     if(shopAdmin)shopAdmin.style.display='none';
+    const fab=document.getElementById('fab-add-level');
+    if(fab)fab.style.display='none';
+    const mainAddBtn=document.getElementById('main-add-level-btn');
+    if(mainAddBtn)mainAddBtn.style.display='none';
   }
   currentUser=name;
   localStorage.setItem('gdl_user',name);
@@ -1798,11 +1813,10 @@ function setAutoRefresh(){const s=parseInt(document.getElementById('autoRefreshS
 //  CSV PARSE
 // ═══════════════════════════════════════════
 function parseAndInit(text){
-  const rows=text.trim().split('\n').map(parseCSVLine);
+  const rows=text.trim().split(/\r?\n/).map(parseCSVLine);
   if(!rows.length)return;
-  // Rows 0–4 are metadata: avatars in col J, logo/coin icon in col S
-  // Row 0: DjCat avatar + logo, Row 1: FlickClickBoom avatar + coin icon,
-  // Row 2: Powerbro avatar, Row 3: NeverEnding76 avatar, Row 4: Jaiden avatar
+  // Avatars/logo/coin icon are embedded in col J/S of the first few level rows
+  // alongside normal level data — no rows are skipped
   PLAYERS.forEach(p=>{
     if(rows[p.avatarRow])playerAvatars[p.name]=(rows[p.avatarRow][COL_J]||'').trim();
   });
@@ -1813,10 +1827,10 @@ function parseAndInit(text){
   }
   if(rows[1]){const ci=(rows[1][COL_S]||'').trim();if(ci)coinIconUrl=ci;}
   setAvatars();
-  // Skip first 5 rows (metadata), real levels start at row index 5
-  const levelRows=rows.slice(5);
+  // ALL rows are levels (no dedicated metadata rows)
+  const levelRows=rows.slice(0);
   allLevels=levelRows.map(c=>{
-    const name=(c[COL_NAME]||'').trim();if(!name)return null;
+    const name=(c[COL_NAME]||'').trim().replace(/\r/g,'');if(!name)return null;
     const colC=(c[COL_IMAGE]||'').trim();
     const imageUrl=colC?(colC.startsWith('http')?colC:`https://levelthumbs.prevter.me/thumbnail/${colC}/small`):'';
     const coinsRaw=(c[COL_COINS]||'').trim();
@@ -1881,7 +1895,18 @@ function parseAndInit(text){
     }
   });
 }
-function parseCSVLine(line){const r=[];let cur='';let inQ=false;for(const ch of line){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){r.push(cur);cur='';}else{cur+=ch;}}r.push(cur);return r;}
+function parseCSVLine(line){
+  // Strip carriage return (Google Sheets uses \r\n)
+  line=line.replace(/\r$/,'');
+  const r=[];let cur='';let inQ=false;
+  for(const ch of line){
+    if(ch==='"'){inQ=!inQ;}
+    else if(ch===','&&!inQ){r.push(cur);cur='';}
+    else{cur+=ch;}
+  }
+  r.push(cur);
+  return r;
+}
 
 function isCoinlessChecked(id){const el=document.getElementById('coinless-'+id);return el?el.checked:false;}
 
