@@ -1318,7 +1318,6 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:20px 18px
     <!-- SHEET SECTION -->
     <div class="settings-section" id="settings-sheet-section">
       <div class="settings-section-title">📊 Google Sheet</div>
-      <div id="settings-sheet-locked" style="display:none;font-size:.74rem;color:var(--muted);padding:4px 0">Sheet settings are admin-only.</div>
       <div id="settings-sheet-fields">
         <label class="modal-lbl">Sheet URL</label>
         <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/e/…/pub?output=csv" class="modal-inp">
@@ -1466,7 +1465,11 @@ let searchQuery= '';
 let searchMode = 'name'; // 'name' | 'creator' | 'song'
 let currentUser= localStorage.getItem('gdl_user') || '';
 let autoRefreshTimer = null;
-let sheetUrl   = localStorage.getItem('gdl_sheet') || '';
+// ── SHEET URL ──
+// Hardcoded default: loads for ALL visitors automatically.
+// Admin can override via Settings (stored in localStorage for their session only).
+const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdDYDuYH4LQy2rsLZE1m9zyLo65THd6W4nFjr34CdrlPMXfhJqn-x5J5ngZkrDh0-E-v1fqmBUsMfZ/pub?output=csv';
+let sheetUrl = localStorage.getItem('gdl_sheet') || DEFAULT_SHEET_URL;
 let coinIconUrl= '';
 
 const playerAvatars = { DjCat:'', FlickClickBoom:'', Powerbro:'', NeverEnding76:'', Jaiden:'' };
@@ -1664,8 +1667,9 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(savedAccent){document.documentElement.style.setProperty('--accent',savedAccent);const el=document.getElementById('accentColorPicker');if(el)el.value=savedAccent;}
   document.querySelectorAll('.user-btn').forEach(b=>b.classList.toggle('active-user',b.dataset.user===currentUser));
   renderPFWraps();
-  if(sheetUrl){document.getElementById('sheetUrlInput').value=sheetUrl;loadSheet();}
-  else{const msg='No sheet connected. Click <a onclick="openSettingsModal()">⚙️ Settings</a> to connect.';['main-list','diff-list','enj-list','prank-list','div-list','wn-list','lb-list','packs-list'].forEach(id=>showEmpty(id,msg));}
+  const inp=document.getElementById('sheetUrlInput');
+  if(inp)inp.value=sheetUrl;
+  loadSheet();
 });
 
 // ═══════════════════════════════════════════
@@ -3606,14 +3610,7 @@ function setDiffFilter(df){diffFilter=df;document.querySelectorAll('.df-btn[data
 function openSettingsModal(){
   const inp=document.getElementById('sheetUrlInput');
   if(inp)inp.value=sheetUrl||'';
-  // Sheet section visibility
-  const sheetLocked=document.getElementById('settings-sheet-locked');
-  const sheetFields=document.getElementById('settings-sheet-fields');
-  if(sheetLocked&&sheetFields){
-    const isAdmin=(currentUser===ADMIN_USER&&isAdminUnlocked);
-    sheetLocked.style.display=isAdmin?'none':'block';
-    sheetFields.style.display=isAdmin?'':'none';
-  }
+  // Sheet section always visible to everyone
   // Populate profile section
   renderSettingsProfile();
   // Populate prefs
